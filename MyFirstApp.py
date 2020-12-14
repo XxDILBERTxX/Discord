@@ -108,13 +108,12 @@ def pinstate(pinname):
     else:
         return 'Off'
 
-#timertime = 0
-#message = "Ding"
-#async def timer_task():
+#async def timer_task(timertime,message):
 #    while timertime > 0:
 #        await asyncio.sleep(timertime)
 #        await bot.get_channel(786035683667214396).send(message)
-#bot.loop.create_task(timer_task())
+#
+#bot.loop.create_task(timer_task(timertime))
 
 async def background_task():
     while True:
@@ -131,9 +130,6 @@ async def time_check():
         channel = bot.get_channel(channel_id)
         messages = ('Test')
         f = '%H:%M'
-
-        #tm_year=2020, tm_mon=12, tm_mday=13, tm_hour=20, tm_min=9, tm_sec=18, tm_wday=6, tm_yday=348, tm_isdst=0
-        #tm_year=1900, tm_mon=1, tm_mday=1, tm_hour=20, tm_min=4, tm_sec=0, tm_wday=0, tm_yday=1, tm_isdst=-1
 
         now = time.localtime()
         print(f'now {now}')
@@ -172,6 +168,7 @@ bot.loop.create_task(time_check())
 """
 
 def on_exit():
+    print()
     print('Exiting RPi Bot.')
     bot.logout()
     bot.close()
@@ -187,5 +184,5 @@ bot.run(TOKEN)
 print()
 print('Humanely Killing RPi Bot.')
 GPIO.cleanup()
-#time.sleep(1)
+time.sleep(1)
 #wipe()

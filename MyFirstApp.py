@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 
 import time
+import asyncio
 
 import RPi.GPIO as GPIO
 #import keybored
@@ -121,9 +122,9 @@ def pinstate(pinname):
 
 async def background_task():
     while True:
-        #await asyncio.sleep(1)
-        if keyboard.is_pressed('b'):
-            print('b Key was pressed')
+        await asyncio.sleep(1)
+        #if keyboard.is_pressed('b'):
+        #    print('b Key was pressed')
         pass
         
 bot.loop.create_task(background_task())

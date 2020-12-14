@@ -7,10 +7,10 @@ from discord.ext import commands
 import time
 
 import RPi.GPIO as GPIO
-import keybored
-import key
-from pyglet.window import key
-import pyglet
+#import keybored
+#import key
+#from pyglet.window import key
+#import pyglet
 
 import random
 
@@ -177,13 +177,15 @@ async def time_check():
 bot.loop.create_task(time_check())
 """
 
-def on_press(key.Q):
+"""
+def on_press(Q):
     print('Exiting RPi Bot.')
     bot.logout()
     bot.close()
     GPIO.cleanup()
     time.sleep(1)
     wipe()
+"""
 
 # Start Bot
 print('Starting RPi Bot...')

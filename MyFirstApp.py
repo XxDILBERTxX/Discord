@@ -5,12 +5,13 @@ import discord
 from discord.ext import commands
 
 import time
+import asyncio
 
 import RPi.GPIO as GPIO
-import keybored
-import key
-from pyglet.window import key
-import pyglet
+#import keybored
+#import key
+#from pyglet.window import key
+#import pyglet
 
 import random
 
@@ -121,9 +122,9 @@ def pinstate(pinname):
 
 async def background_task():
     while True:
-        #await asyncio.sleep(1)
-        if keyboard.is_pressed('b'):
-            print('b Key was pressed')
+        await asyncio.sleep(1)
+        #if keyboard.is_pressed('b'):
+        #    print('b Key was pressed')
         pass
         
 bot.loop.create_task(background_task())
@@ -177,13 +178,15 @@ async def time_check():
 bot.loop.create_task(time_check())
 """
 
-def on_press(key.Q):
+"""
+def on_press(Q):
     print('Exiting RPi Bot.')
     bot.logout()
     bot.close()
     GPIO.cleanup()
     time.sleep(1)
     wipe()
+"""
 
 # Start Bot
 print('Starting RPi Bot...')

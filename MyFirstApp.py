@@ -7,12 +7,12 @@ from discord.ext import commands
 import time
 #import sched
 import asyncio
-import sys
 
 import RPi.GPIO as GPIO
 
 import random
 
+import sys
 import os
 def wipe(): os.system('clear')
 
@@ -29,7 +29,7 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(relay1, GPIO.OUT)
 GPIO.setup(led1, GPIO.OUT)
 GPIO.setup(pir1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-#GPIO.setup(pir2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#GPIO.setup(pin2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
 TOKEN = open("/home/pi/Discord/token.txt","r").readline()
@@ -172,7 +172,7 @@ async def time_check():
 bot.loop.create_task(time_check())
 """
 
-async def on_exit():
+async def quit_exit():
     print()
     print('Exiting RPi Bot.')
     await bot.change_presence(status=discord.Status.offline, activity = discord.Activity(type = discord.ActivityType.unknown, name = 'bye'))
@@ -187,7 +187,7 @@ async def on_exit():
 print('Starting RPi Bot...')
 bot.run(TOKEN)
 
-# Stop Bot
+# Bot exited
 print()
 print('Humanely Killing RPi Bot.')
 GPIO.cleanup()

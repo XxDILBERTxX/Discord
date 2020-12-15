@@ -1,5 +1,7 @@
 import discord
 
+TOKEN = open("/home/pi/Discord/token.txt","r").readline()
+
 class MyClient(discord.Client):
     async def on_ready(self):
         print('Connected!')
@@ -18,4 +20,4 @@ class MyClient(discord.Client):
         await message.channel.send(fmt.format(message))
 
 client = MyClient()
-client.run('token')
+client.run('TOKEN')

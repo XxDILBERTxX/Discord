@@ -3,6 +3,7 @@ import random
 import discord
 from discord.ext import commands
 
+TOKEN = open("/home/pi/Discord/token.txt","r").readline()
 
 class MyContext(commands.Context):
     async def tick(self, value):
@@ -47,5 +48,4 @@ async def guess(ctx, number: int):
 # let people do very malicious things with your
 # bot. try to use a file or something to keep
 # them private, and dont commit it to GitHub
-token = "Nzg2MDg4MDAwODg2NjY5MzEy.X9BTgA.KbYRbTTajben1Mj_j2KTsuyzYyw"
-bot.run(token)
+bot.run(TOKEN)

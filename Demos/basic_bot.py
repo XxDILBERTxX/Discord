@@ -11,6 +11,7 @@ There are a number of utility commands being showcased here.'''
 intents = discord.Intents.default()
 intents.members = True
 
+TOKEN = open("/home/pi/Discord/token.txt","r").readline()
 bot = commands.Bot(command_prefix='?', description=description, intents=intents)
 
 @bot.event
@@ -66,4 +67,4 @@ async def _bot(ctx):
     """Is the bot cool?"""
     await ctx.send('Yes, the bot is cool.')
 
-bot.run('Nzg2MDg4MDAwODg2NjY5MzEy.X9BTgA.KbYRbTTajben1Mj_j2KTsuyzYyw')
+bot.run('TOKEN')

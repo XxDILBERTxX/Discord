@@ -2,6 +2,8 @@ description = """Uses a messages to add and remove roles through reactions."""
 
 import discord
 
+TOKEN = open("/home/pi/Discord/token.txt","r").readline()
+
 class RoleReactClient(discord.Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -80,4 +82,4 @@ intents = discord.Intents.default()
 intents.members = True
 
 client = RoleReactClient(intents=intents)
-client.run("Nzg2MDg4MDAwODg2NjY5MzEy.X9BTgA.KbYRbTTajben1Mj_j2KTsuyzYyw")
+client.run("TOKEN")

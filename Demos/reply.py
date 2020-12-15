@@ -1,5 +1,7 @@
 import discord
 
+TOKEN = open("/home/pi/Discord/token.txt","r").readline()
+
 class MyClient(discord.Client):
     async def on_ready(self):
         print('Logged in as')
@@ -16,4 +18,4 @@ class MyClient(discord.Client):
             await message.reply('Hello!', mention_author=True)
 
 client = MyClient()
-client.run('Nzg2MDg4MDAwODg2NjY5MzEy.X9BTgA.KbYRbTTajben1Mj_j2KTsuyzYyw')
+client.run('TOKEN')

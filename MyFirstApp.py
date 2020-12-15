@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 
 import time
+#import sched
 import asyncio
 
 import RPi.GPIO as GPIO
@@ -14,17 +15,21 @@ import random
 import os
 def wipe(): os.system('clear')
 
-lighttimer = 60
+lighttimer = 120
 
-pir = 11
-relay1 = 13
-led1 = 21
+pir1 = 11
+pir2 = 12
+relay1 = 13 #led for now
+led1 = 15
+#pin2 = 16
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(relay1, GPIO.OUT)
 GPIO.setup(led1, GPIO.OUT)
-GPIO.setup(pir, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(pir1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+#GPIO.setup(pir2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
 
 TOKEN = open("/home/pi/Discord/token.txt","r").readline()
 bot = commands.Bot(command_prefix='.')
@@ -35,6 +40,8 @@ async def on_ready():
     #await bot.change_presence(activity=discord.Streaming(name='Sea of Thieves', url='https://www.twitch.tv/your_channel_here'))
     #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='The Boys'))
     #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='Some Custom Beats'))
+    #await bot.change_presence(status=discord.Status.idle, activity=activity)
+    await bot.change_presence(activity=(),status=(online offline idle dnd invisible), afk=())
     #wipe()
     
     print('---Logged in as---')
@@ -88,19 +95,21 @@ async def _on(ctx):
         GPIO.output(led1, GPIO.HIGH)
         print(f'led1 on  - {ctx.message.author.name}   {time.asctime(time.localtime(time.time()))}')
 
-def pir_motion(channel):
+def motion_light(channel):
     moved = time.mktime(time.localtime())
     while GPIO.input(channel) == 0:
         if pinstate(relay1) == 'On':
             remaining = lighttimer + moved - time.mktime(time.localtime())
             if remaining <= 0:
                 print(f"Relay off - Timeout  {time.asctime(time.localtime(time.time()))}")
+                
                 GPIO.output(relay1, GPIO.LOW)
     while GPIO.input(channel) == 1:
         if pinstate(relay1) == 'Off':
             print(f"Relay on  - Motion   {time.asctime(time.localtime(time.time()))}")
+            bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='Something!'))
             GPIO.output(relay1, GPIO.HIGH)
-GPIO.add_event_detect(pir,GPIO.RISING,callback=pir_motion,bouncetime=300)
+GPIO.add_event_detect(pir1,GPIO.RISING,callback=motion_light,bouncetime=300)
 
 def pinstate(pinname):
     if GPIO.input(pinname):
@@ -108,21 +117,13 @@ def pinstate(pinname):
     else:
         return 'Off'
 
-#async def timer_task(timertime,message):
-#    while timertime > 0:
-#        await asyncio.sleep(timertime)
-#        await bot.get_channel(786035683667214396).send(message)
-#
-#bot.loop.create_task(timer_task(timertime))
-
 async def background_task():
     while True:
         await asyncio.sleep(1)
-        pass
-bot.loop.create_task(background_task())
+#bot.loop.create_task(background_task())
 
 """
-alarm_time = '20:04'#24hrs
+alarm_time = '02:30' #24hrs
 channel_id = '786035683667214396'
 async def time_check():
     await bot.wait_until_ready()
@@ -132,42 +133,31 @@ async def time_check():
         f = '%H:%M'
 
         now = time.localtime()
-        print(f'now {now}')
         nowhm =time.strftime(f,now)
-        print(f'nowhm {nowhm}')
-        nowsec = time.mktime(now)
-        print(f'nowsec {nowsec}')
-        
-        #tt1 =time.strptime(nowhm,f)
-        #print(f'tt1 {tt1}')
-        #tt2 = time.strptime(alarm_time,f)
-        #print(f'tt2 {tt2}')
 
-        #tt1a = time.mktime(tt1)
-        #print(f'tt1a {tt1a}')
-        #tt2a = time.mktime(tt2)
-        #print(f'tt2a {tt2a}')
+        now_h, now_m = map(int, nowhm.split(':'))
+        h = now_h * 3600 
+        s = now_m * 60
+        now_s = h + s
 
-        # get the difference between the alarm time and now
-        #diff = (time.strftime(f,alarm_time) - time.strftime(f,now)).total_seconds()
-        #diff = time.mktime(alarm_time) - time.time()
-        #diff = (alarm_time - now)
-        #diff = (time.strptime(alarm_time,f) - time.strptime(now,f)).total_seconds()  
-        print(datetime.timedelta(nowhm - alarm_time))
-        diff = (time.timedelta(alarm_time,f) - nowhm)
+        alarm_h, alarm_m = map(int, alarm_time.split(':'))
+        h = alarm_h * 3600 
+        s = alarm_m * 60
+        alarm_s = h + s
+
+        diff = alarm_s - now_s
 
         # create a scheduler
-        print(f'diff {diff}')
         s = sched.scheduler(time.perf_counter, time.sleep)
         # arguments being passed to the function being called in s.enter
-        args = (bot.send_message(channel, messages), )
+        args = (channel, messages)
         # enter the command and arguments into the scheduler
-        s.enter(5, 1, bot.loop.create_task, args)
+        s.enter(diff, 1, bot.loop.create_task, args)
         s.run() # run the scheduler, will block the event loop
 bot.loop.create_task(time_check())
 """
 
-def on_exit():
+def exit():
     print()
     print('Exiting RPi Bot.')
     bot.logout()

@@ -7,6 +7,7 @@ from discord.ext import commands
 import time
 #import sched
 import asyncio
+import sys
 
 import RPi.GPIO as GPIO
 
@@ -40,8 +41,18 @@ async def on_ready():
     #await bot.change_presence(activity=discord.Streaming(name='Sea of Thieves', url='https://www.twitch.tv/your_channel_here'))
     #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='The Boys'))
     #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='Some Custom Beats'))
-    #await bot.change_presence(status=discord.Status.idle, activity=activity)
-    await bot.change_presence(activity=(),status=(online offline idle dnd invisible), afk=())
+
+    """
+    ActivityType
+      unknown - clears
+   
+    Status
+      online
+      idle
+     dnd #work sometimes?
+     do_not_disturb
+    """
+    await bot.change_presence(status=discord.Status.idle, activity = discord.Activity(type = discord.ActivityType.listening, name = 'My Masters'))
     #wipe()
     
     print('---Logged in as---')
@@ -102,12 +113,12 @@ def motion_light(channel):
             remaining = lighttimer + moved - time.mktime(time.localtime())
             if remaining <= 0:
                 print(f"Relay off - Timeout  {time.asctime(time.localtime(time.time()))}")
-                
+                #bot.change_presence(status=discord.Status.idle, activity = discord.Activity(type = discord.ActivityType.listening, name = 'My Master'))
                 GPIO.output(relay1, GPIO.LOW)
     while GPIO.input(channel) == 1:
         if pinstate(relay1) == 'Off':
             print(f"Relay on  - Motion   {time.asctime(time.localtime(time.time()))}")
-            bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='Something!'))
+            #bot.change_presence(status=discord.Status.idle, activity = discord.Activity(type = discord.ActivityType.watching, name = 'Movment'))
             GPIO.output(relay1, GPIO.HIGH)
 GPIO.add_event_detect(pir1,GPIO.RISING,callback=motion_light,bouncetime=300)
 
@@ -120,7 +131,11 @@ def pinstate(pinname):
 async def background_task():
     while True:
         await asyncio.sleep(1)
+        #input("Press Enter to continue...")
+        #await on_exit()
+
 #bot.loop.create_task(background_task())
+#print('')
 
 """
 alarm_time = '02:30' #24hrs
@@ -157,13 +172,15 @@ async def time_check():
 bot.loop.create_task(time_check())
 """
 
-def exit():
+async def on_exit():
     print()
     print('Exiting RPi Bot.')
-    bot.logout()
-    bot.close()
+    await bot.change_presence(status=discord.Status.offline, activity = discord.Activity(type = discord.ActivityType.unknown, name = 'bye'))
+    await bot.logout()
+    await bot.close()
     GPIO.cleanup()
-    time.sleep(1)
+    #time.sleep(1)
+    sys.exit
     #wipe()
 
 # Start Bot

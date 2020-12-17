@@ -1,7 +1,8 @@
 # Discord
+A Discord bot for Raspberry Pi 
 
-
-
-
-token.txt is removed for secuity 
-just a bot token key
+ Removed for security
+# config.py
+  TOKEN = 'PLACE BOT TOKEN HERE'
+  lighttimer = 'TIME TO TURN LIGHT OFF'
+  adminrole = 'ROLE FOR ADMIN'

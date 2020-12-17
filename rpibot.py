@@ -67,14 +67,24 @@ async def roll(ctx, dice: str):
     try:
         rolls, limit = map(int, dice.split('d'))
     except Exception:
-        await ctx.send('Format has to be in #d#!')
+        await ctx.send('Format has to be in #d#')
         return
     result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
     await ctx.send(result)
+@roll.error
+async def roll_error(ctx, error):
+    if isinstance(error, commands.UserInputError):
+        await ctx.send("Invalid input.")
+        return
 
 @bot.command()
 async def joined(ctx, member: discord.Member):
-    await ctx.send('{0.name} joined in {0.joined_at}'.format(member))
+    await ctx.send('{0.name} joined on {0.joined_at}'.format(member))
+@joined.error
+async def joined_error(ctx, error):
+    if isinstance(error, commands.UserInputError):
+        await ctx.send("No user with at name here!.")
+        return
 
 @bot.command()
 async def ping(ctx):
@@ -88,6 +98,7 @@ async def hide(ctx, amount=3) :
 @hide.error
 async def hide_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
+        await ctx.send("You Cant Hide lines")
         print(f'{ctx.message.author.name} Error {error} At  {time.asctime(time.localtime(time.time()))}')
 
 @bot.group()
@@ -107,6 +118,7 @@ async def _off(ctx):
 @_off.error
 async def _off_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
+        await ctx.send("You Do Not have permission to do that, Yo!")
         print(f'{ctx.message.author.name} Error {error} At  {time.asctime(time.localtime(time.time()))}')
 
 @led.command(name='on')
@@ -121,6 +133,7 @@ async def _on(ctx):
 @_on.error
 async def _on_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
+        await ctx.send("You Do Not have permission to do that, Yo!")
         print(f'{ctx.message.author.name} Error {error} At  {time.asctime(time.localtime(time.time()))}')
 
 def motion_light(channel):

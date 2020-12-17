@@ -99,7 +99,7 @@ async def hide(ctx, amount=3) :
 async def hide_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
         await ctx.send("You Cant Hide lines")
-        print(f'{ctx.message.author.name} Error {error} At  {time.asctime(time.localtime(time.time()))}')
+        print(f'{ctx.message.author.name} Tried to hide At  {time.asctime(time.localtime(time.time()))}')
 
 @bot.group()
 async def led(ctx):
@@ -119,7 +119,7 @@ async def _off(ctx):
 async def _off_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
         await ctx.send("You Do Not have permission to do that, Yo!")
-        print(f'{ctx.message.author.name} Error {error} At  {time.asctime(time.localtime(time.time()))}')
+        print(f'{ctx.message.author.name} tried to turn the led off At  {time.asctime(time.localtime(time.time()))}')
 
 @led.command(name='on')
 @commands.has_role(adminrole)
@@ -134,7 +134,7 @@ async def _on(ctx):
 async def _on_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
         await ctx.send("You Do Not have permission to do that, Yo!")
-        print(f'{ctx.message.author.name} Error {error} At  {time.asctime(time.localtime(time.time()))}')
+        print(f'{ctx.message.author.name} tried to turn the led on At  {time.asctime(time.localtime(time.time()))}')
 
 def motion_light(channel):
     moved = time.mktime(time.localtime())

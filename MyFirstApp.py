@@ -16,7 +16,9 @@ import sys
 import os
 def wipe(): os.system('clear')
 
+from myconfig import *
 lighttimer = 120
+adminrole = 'Test1'
 
 pir1 = 11
 pir2 = 12
@@ -41,7 +43,6 @@ async def on_ready():
     #await bot.change_presence(activity=discord.Streaming(name='Sea of Thieves', url='https://www.twitch.tv/your_channel_here'))
     #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='The Boys'))
     #await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='Some Custom Beats'))
-
     """
     ActivityType
       unknown - clears
@@ -79,9 +80,15 @@ async def ping(ctx):
     await ctx.send(f'Pong! {round (bot.latency * 1000)}ms ')
 
 @bot.command()
+@commands.has_role(adminrole)
 async def hide(ctx, amount=3) :
     await ctx.channel.purge(limit=amount)
     print(f'Purged {amount} lines - {ctx.message.author.name}   {time.asctime(time.localtime(time.time()))}')
+@hide.error
+async def hide_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        print(f'{ctx.message.author.name} Error {error} At  {time.asctime(time.localtime(time.time()))}')
+
 
 @bot.group()
 async def led(ctx):
@@ -89,6 +96,7 @@ async def led(ctx):
         await ctx.send(f'The LED Light is {pinstate(led1)}...')
 
 @led.command(name='off')
+@commands.has_role(adminrole)
 async def _off(ctx):
     if pinstate(led1) == 'Off':
         await ctx.send('led1 is Off.')
@@ -96,8 +104,13 @@ async def _off(ctx):
         await ctx.send('led1 turned Off..')
         GPIO.output(led1, GPIO.LOW)
         print(f'led1 off - {ctx.message.author.name}   {time.asctime(time.localtime(time.time()))}')
+@_off.error
+async def _off_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        print(f'{ctx.message.author.name} Error {error} At  {time.asctime(time.localtime(time.time()))}')
 
 @led.command(name='on')
+@commands.has_role(adminrole)
 async def _on(ctx):
     if pinstate(led1) == 'On':
         await ctx.send('led1 is On.')
@@ -105,6 +118,10 @@ async def _on(ctx):
         await ctx.send('led1 turned On..')
         GPIO.output(led1, GPIO.HIGH)
         print(f'led1 on  - {ctx.message.author.name}   {time.asctime(time.localtime(time.time()))}')
+@_on.error
+async def _on_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        print(f'{ctx.message.author.name} Error {error} At  {time.asctime(time.localtime(time.time()))}')
 
 def motion_light(channel):
     moved = time.mktime(time.localtime())

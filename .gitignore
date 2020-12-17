@@ -133,3 +133,4 @@ dmypy.json
 
 # Bot token (for sec)
 token.txt
+config.py

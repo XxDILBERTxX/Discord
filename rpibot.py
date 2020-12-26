@@ -23,9 +23,9 @@ from config import *
 #adminrole
 # --
 
-pir1 = 11
+pir1 = 7
 pir2 = 12
-relay1 = 13 #led for now
+relay1 = 8 #led for now
 led1 = 15
 #pin2 = 16
 
@@ -139,6 +139,7 @@ async def _on_error(ctx, error):
 def motion_light(channel):
     moved = time.mktime(time.localtime())
     while GPIO.input(channel) == 0:
+        time.sleep(.5)
         if pinstate(relay1) == 'On':
             remaining = lighttimer + moved - time.mktime(time.localtime())
             if remaining <= 0:

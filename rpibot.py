@@ -12,6 +12,8 @@ import RPi.GPIO as GPIO
 
 import random
 
+import picamera
+
 import sys
 import os
 def wipe(): os.system('clear')
@@ -23,20 +25,23 @@ from config import *
 #adminrole
 # --
 
-pir1 = 7
-pir2 = 12
-relay1 = 8 #led for now
-led1 = 15
-#pin2 = 16
+pir1 = 4 #7
+relay1 = 14 #8
+led1 = 22 #15
 
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(relay1, GPIO.OUT)
 GPIO.setup(led1, GPIO.OUT)
 GPIO.setup(pir1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 #GPIO.setup(pin2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 bot = commands.Bot(command_prefix='.')
+camera = picamera.PiCamera()
+camera.vflip = True
+camera.hflip = True
+#camera.led = False
+
 
 @bot.event
 async def on_ready():
@@ -61,6 +66,12 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------Ready!------')
+
+@bot.command()
+async def pic(ctx):
+    camera.capture('snap.jpg')
+    channel = bot.get_channel(786035683667214396)
+    await channel.send(file=discord.File('snap.jpg'))
 
 @bot.command()
 async def roll(ctx, dice: str):

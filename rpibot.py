@@ -27,7 +27,7 @@ from config import *
 
 pir1 = 4 #7
 relay1 = 14 #8
-led1 = 22 #15
+led1 = 18 #12
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)

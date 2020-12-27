@@ -3,6 +3,7 @@ print('Loading RPi bot...')
 
 import discord
 from discord.ext import commands
+from discord.ext.commands import CommandNotFound
 
 import time
 #import sched
@@ -67,11 +68,20 @@ async def on_ready():
     print(bot.user.id)
     print('------Ready!------')
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        print(f'{error} by {ctx.message.author.name} at {time.asctime(time.localtime(time.time()))}')
+        return
+    raise error
+
 @bot.command()
+@commands.has_role(adminrole)
 async def pic(ctx):
     camera.capture('snap.jpg')
     channel = bot.get_channel(786035683667214396)
     await channel.send(file=discord.File('snap.jpg'))
+    print(f'Snap by {ctx.message.author.name} at {time.asctime(time.localtime(time.time()))}')
 
 @bot.command()
 async def roll(ctx, dice: str):
@@ -105,7 +115,7 @@ async def ping(ctx):
 @commands.has_role(adminrole)
 async def hide(ctx, amount=3) :
     await ctx.channel.purge(limit=amount)
-    print(f'Purged {amount} lines - {ctx.message.author.name}   {time.asctime(time.localtime(time.time()))}')
+    print(f'Purged {amount} lines by {ctx.message.author.name}  at  {time.asctime(time.localtime(time.time()))}')
 @hide.error
 async def hide_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
